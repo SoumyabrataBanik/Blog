@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 
 export interface IUser {
-    username: string;
+    userName: string;
     email: string;
     password: string;
     createdAt?: Date;
@@ -10,7 +10,7 @@ export interface IUser {
 
 const userSchema = new Schema<IUser>(
     {
-        username: {
+        userName: {
             type: String,
             unique: true,
             trim: true,
@@ -33,4 +33,4 @@ const userSchema = new Schema<IUser>(
     { timestamps: true }
 );
 
-export const User = mongoose.model("User", userSchema);
+export const UserModel = mongoose.model("User", userSchema);
