@@ -1,10 +1,15 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcryptjs";
 
 import { validateSignUpDetails } from "../helpers/validators";
 import { UserModel } from "../models/user.models";
+import { errorHandler } from "../utils/ApiError";
 
-export async function signup(req: Request, res: Response): Promise<Response> {
+export async function signup(
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Promise<Response | void> {
     try {
         const { userName, email, password } = req.body;
 
@@ -24,10 +29,11 @@ export async function signup(req: Request, res: Response): Promise<Response> {
         });
 
         if (userExists) {
-            return res.status(500).json({
-                success: false,
-                message: "Username/email already exists",
-            });
+            // return res.status(500).json({
+            //     success: false,
+            //     message: "Username/email already exists",
+            // });
+            next(errorHandler(false, 500, "Username/email already exists"));
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -40,14 +46,12 @@ export async function signup(req: Request, res: Response): Promise<Response> {
 
         await newUser.save();
 
-        return res.status(200).json({
-            success: true,
-            message: "User registered successfully",
-        });
+        // return res.status(200).json({
+        //     success: true,
+        //     message: "User registered successfully",
+        // });
+        next(errorHandler(true, 200, "User registered successfully"));
     } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: "User could not be registered due to server error.",
-        });
+        next(error);
     }
 }

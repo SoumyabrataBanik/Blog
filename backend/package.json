@@ -4,7 +4,7 @@
   "description": "This is fullstack blog website built using React and Nodejs.",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node-dev src/index.ts --watch ['src/**/*.ts', '.env']",
+    "dev": "ts-node-dev src/index.ts --watch ['src/**/*.ts', '/.env']",
     "build": "tsc",
     "start": "node ./dist/index.js"
   },
