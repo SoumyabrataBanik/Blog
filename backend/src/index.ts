@@ -1,7 +1,8 @@
-import express from "express";
 import dotenv from "dotenv";
-import mongoose from "mongoose";
+import express from "express";
+
 import { connectDB } from "./db/connectDB";
+import userRouter from "./routes/user.route";
 
 dotenv.config({
     path: "./.env",
@@ -14,10 +15,8 @@ connectDB();
 const app = express();
 const port = process.env.PORT || 5000;
 
-app.get("/", (_, res) => {
-    res.json(`Server running at ${port}`);
-});
-
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
 });
+
+app.use("/api/user", userRouter);
