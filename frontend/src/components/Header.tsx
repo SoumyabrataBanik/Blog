@@ -42,6 +42,7 @@ export default function Header() {
                 <Link to="/sign-up">
                     <Button
                         gradientDuoTone="purpleToPink"
+                        outline
                         className="h-10 flex items-center justify-center"
                     >
                         Sign Up
