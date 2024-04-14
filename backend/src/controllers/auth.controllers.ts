@@ -92,7 +92,11 @@ export async function signin(
             .cookie("accessToken", token, {
                 httpOnly: true,
             })
-            .json(user);
+            .json({
+                success: true,
+                message: "User successfully logged in",
+                user,
+            });
     } catch (error) {
         const message = (error as Error).message;
         next(errorHandler(false, 500, message));

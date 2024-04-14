@@ -3,13 +3,13 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import { HiOutlineCheckCircle, HiOutlineXCircle } from "react-icons/hi";
 import { Link, useNavigate } from "react-router-dom";
 
-interface FormDataType {
-    userName: string | undefined;
+export interface FormDataType {
+    userName?: string | undefined;
     email?: string | undefined;
     password?: string | undefined;
 }
 
-interface ResponseData {
+export interface ResponseData {
     success: boolean;
     message: string;
 }
@@ -58,7 +58,7 @@ export default function SignUp() {
 
     function modalCloseHandler() {
         if (resData.success) {
-            navigate("/sign-in");
+            navigate("sign-in");
         }
         setOpenModal(false);
     }
@@ -150,7 +150,7 @@ export default function SignUp() {
                 <p className="text-base md:text-lg text-center mt-10 md:mt-20">
                     <span>Already have an account?</span>{" "}
                     <Link
-                        to="sign-in"
+                        to="/sign-in"
                         className="text-blue-500 underline"
                     >
                         Sign In
