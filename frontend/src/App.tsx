@@ -8,6 +8,7 @@ import Projects from "./pages/Projects";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Header from "./components/Header";
+import FooterCom from "./components/Footer";
 
 export default function App(): ReactElement {
     return (
@@ -39,6 +40,7 @@ export default function App(): ReactElement {
                     element={<Dashboard />}
                 />
             </Routes>
+            <FooterCom />
         </BrowserRouter>
     );
 }
