@@ -18,10 +18,7 @@ export async function signup(
             !validateSignUpDetails(email) ||
             !validateSignUpDetails(password)
         ) {
-            return res.status(400).json({
-                success: false,
-                message: "All fields are required",
-            });
+            next(errorHandler(false, 400, "All fields are required"));
         }
 
         const userExists = await UserModel.findOne({
@@ -52,6 +49,6 @@ export async function signup(
         // });
         next(errorHandler(true, 200, "User registered successfully"));
     } catch (error) {
-        next(error);
+        next(errorHandler());
     }
 }

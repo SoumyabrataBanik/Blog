@@ -4,13 +4,13 @@ class ApiError extends Error {
 }
 
 export const errorHandler = (
-    success: boolean,
-    statusCode: number,
-    message: string
+    success?: boolean,
+    statusCode?: number,
+    message?: string
 ) => {
     const error = new ApiError();
-    error.success = success;
-    error.statusCode = statusCode;
-    error.message = message;
+    error.success = success || false;
+    error.statusCode = statusCode || 500;
+    error.message = message || "Internal Serval Error";
     return error;
 };
