@@ -1,36 +1,50 @@
 import { ChangeEvent, FormEvent, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 
 import { Button, Label, Modal, Spinner, TextInput } from "flowbite-react";
-
-import { FormDataType, ResponseData } from "./SignUp";
 import { HiOutlineCheckCircle, HiOutlineXCircle } from "react-icons/hi";
+
+import { RootState } from "../redux-store/store";
+import {
+    signInFailure,
+    signInStart,
+    signInSuccess,
+} from "../redux-store/user/userSlice";
+import { FormDataType, ResponseData } from "./SignUp";
 
 export default function SignIn() {
     //Navigator:
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     //States:
     const [formData, setFormData] = useState<FormDataType>({
         email: "",
         password: "",
     });
-    const [loading, setLoading] = useState<boolean>(false);
     const [resData, setResData] = useState<ResponseData>({
         success: true,
         message: "Successful",
     });
     const [openModal, setOpenModal] = useState<boolean>(false);
 
+    // Redux Selector:
+    const { loading } = useSelector((state: RootState) => state.user);
+
+    // Handler functions:
     function handleChange(e: ChangeEvent<HTMLInputElement>) {
         setFormData({ ...formData, [e.target.id]: e.target.value });
     }
 
-    // Handler functions:
     async function onSubmitHandler(e: FormEvent) {
         e.preventDefault();
+        if (!formData.email || !formData.password) {
+            dispatch(signInFailure("All Fields are required"));
+        }
         try {
-            setLoading(true);
+            // setLoading(true);
+            dispatch(signInStart());
             const res = await fetch("/api/auth/sign-in", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -39,10 +53,11 @@ export default function SignIn() {
             const data = await res.json();
             const { success, message } = await data;
             setResData({ success, message });
-            setLoading(false);
             if (!success) {
                 setOpenModal(true);
+                dispatch(signInFailure(message));
             } else {
+                dispatch(signInSuccess(data?.user));
                 navigate("/");
             }
         } catch (error) {
@@ -50,7 +65,7 @@ export default function SignIn() {
                 success: false,
                 message: "Api Error",
             });
-            setLoading(false);
+            dispatch(signInFailure(resData.message));
         }
     }
 
