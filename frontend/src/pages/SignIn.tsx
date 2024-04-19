@@ -12,6 +12,7 @@ import {
     signInSuccess,
 } from "../redux-store/user/userSlice";
 import { FormDataType, ResponseData } from "./SignUp";
+import OAuth from "../components/OAuth";
 
 export default function SignIn() {
     //Navigator:
@@ -129,21 +130,21 @@ export default function SignIn() {
                                     required
                                 />
                             </div>
-                            <div>
-                                <Button
-                                    gradientDuoTone="purpleToPink"
-                                    type="submit"
-                                >
-                                    {loading ? (
-                                        <p className="flex items-center justify-center">
-                                            <Spinner size="sm" />
-                                            <span className="p-3">Loading</span>
-                                        </p>
-                                    ) : (
-                                        "Sign In"
-                                    )}
-                                </Button>
-                            </div>
+
+                            <Button
+                                gradientDuoTone="purpleToPink"
+                                type="submit"
+                            >
+                                {loading ? (
+                                    <p className="flex items-center justify-center">
+                                        <Spinner size="sm" />
+                                        <span className="p-3">Loading</span>
+                                    </p>
+                                ) : (
+                                    "Sign In"
+                                )}
+                            </Button>
+                            <OAuth />
                         </form>
                     </div>
                 </div>

@@ -2,6 +2,7 @@ import { Button, Label, Modal, Spinner, TextInput } from "flowbite-react";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { HiOutlineCheckCircle, HiOutlineXCircle } from "react-icons/hi";
 import { Link, useNavigate } from "react-router-dom";
+import OAuth from "../components/OAuth";
 
 export interface FormDataType {
     userName?: string | undefined;
@@ -129,21 +130,21 @@ export default function SignUp() {
                                     required
                                 />
                             </div>
-                            <div>
-                                <Button
-                                    gradientDuoTone="purpleToPink"
-                                    type="submit"
-                                >
-                                    {loading ? (
-                                        <p className="flex items-center justify-center">
-                                            <Spinner size="sm" />
-                                            <span className="p-3">Loading</span>
-                                        </p>
-                                    ) : (
-                                        "Sign Up"
-                                    )}
-                                </Button>
-                            </div>
+
+                            <Button
+                                gradientDuoTone="purpleToPink"
+                                type="submit"
+                            >
+                                {loading ? (
+                                    <p className="flex items-center justify-center">
+                                        <Spinner size="sm" />
+                                        <span className="p-3">Loading</span>
+                                    </p>
+                                ) : (
+                                    "Sign Up"
+                                )}
+                            </Button>
+                            <OAuth />
                         </form>
                     </div>
                 </div>

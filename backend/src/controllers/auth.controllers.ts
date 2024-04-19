@@ -103,3 +103,77 @@ export async function signin(
         return;
     }
 }
+
+export async function googleAuth(
+    req: Request,
+    res: Response,
+    next: NextFunction
+) {
+    const { userName, email, photoUrl } = req.body;
+
+    try {
+        const userExists = await UserModel.findOne({
+            $or: [{ userName }, { email }],
+        });
+
+        // User already exists, sign in:
+        if (userExists) {
+            const token = jwt.sign(
+                {
+                    id: userExists?._id,
+                },
+                process.env.JWT_SECRET_TOKEN as Secret
+            );
+            const user = await UserModel.findById(userExists._id).select(
+                "-password"
+            );
+            return res
+                .status(200)
+                .cookie("access-token", token, {
+                    httpOnly: true,
+                })
+                .json({
+                    success: true,
+                    message: "Google login successfull",
+                    user,
+                });
+        }
+
+        // User does not exist, sign up:
+        else {
+            const generatedPassword =
+                Math.random().toString(36).slice(-8) +
+                Math.random().toString(36).slice(-8) +
+                Math.random().toString(36).slice(-8);
+
+            const hashedPassword = await bcrypt.hash(generatedPassword, 10);
+            const newUser = new UserModel({
+                userName:
+                    userName.toLowerCase().split(" ").join("") +
+                    Math.random().toString(9).slice(-4),
+                email,
+                password: hashedPassword,
+                avatar: photoUrl,
+            });
+            await newUser.save();
+
+            const token = jwt.sign(
+                {
+                    id: newUser._id,
+                },
+                process.env.JWT_SECRET_TOKEN as Secret
+            );
+
+            const user = await UserModel.findById(newUser._id).select(
+                "-password"
+            );
+            return res.status(200).cookie("access-token", token).json({
+                success: true,
+                message: "Google Login Successfull",
+                user,
+            });
+        }
+    } catch (error) {
+        next(error);
+    }
+}
