@@ -1,10 +1,14 @@
-import { Button, Navbar, TextInput } from "flowbite-react";
+import { Avatar, Button, Dropdown, Navbar, TextInput } from "flowbite-react";
 import { FaMoon } from "react-icons/fa";
 import { HiSearch } from "react-icons/hi";
+import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
+
+import { RootState } from "../redux-store/store";
 
 export default function Header() {
     const path = useLocation().pathname;
+    const { currentUser } = useSelector((state: RootState) => state.user);
     return (
         <Navbar className="border-b-2">
             <Link
@@ -39,15 +43,41 @@ export default function Header() {
                 >
                     <FaMoon />
                 </Button>
-                <Link to="/sign-up">
-                    <Button
-                        gradientDuoTone="purpleToPink"
-                        outline
-                        className="h-10 flex items-center justify-center"
+                {currentUser ? (
+                    <Dropdown
+                        arrowIcon={false}
+                        inline
+                        label={
+                            <Avatar
+                                alt="user-avatar"
+                                img={currentUser.avatar}
+                                rounded
+                            />
+                        }
                     >
-                        Sign Up
-                    </Button>
-                </Link>
+                        <Dropdown.Header className="block text-sm">
+                            @{currentUser.userName}
+                        </Dropdown.Header>
+                        <Dropdown.Header className="text-sm font-semibold block truncate">
+                            @{currentUser.email}
+                        </Dropdown.Header>
+                        <Link to="/dashboard?tab=profile">
+                            <Dropdown.Item>Profile</Dropdown.Item>
+                        </Link>
+                        <Dropdown.Divider />
+                        <Dropdown.Item>Sign Out</Dropdown.Item>
+                    </Dropdown>
+                ) : (
+                    <Link to="/sign-up">
+                        <Button
+                            gradientDuoTone="purpleToPink"
+                            outline
+                            className="h-10 flex items-center justify-center"
+                        >
+                            Sign Up
+                        </Button>
+                    </Link>
+                )}
             </div>
             <Navbar.Toggle />
             <Navbar.Collapse>
