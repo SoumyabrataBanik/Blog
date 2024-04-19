@@ -6,6 +6,9 @@
     "module": "ESNext",
     "skipLibCheck": true,
 
+    /*Types: */
+    "typeRoots": ["./types"],
+
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
@@ -20,6 +23,10 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
+  "exclude": ["node_modules"],
+  "include": ["src", "**/*.ts", "**/*.tsx"],
+  "files": [
+    "./node_modules/redux-persist/types/integration/react.d.ts"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
