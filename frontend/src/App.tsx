@@ -9,6 +9,7 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Header from "./components/Header";
 import FooterCom from "./components/Footer";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 export default function App(): ReactElement {
     return (
@@ -35,10 +36,12 @@ export default function App(): ReactElement {
                     path="/sign-up"
                     element={<SignUp />}
                 />
-                <Route
-                    path="/dashboard"
-                    element={<Dashboard />}
-                />
+                <Route element={<ProtectedRoute />}>
+                    <Route
+                        path="/dashboard"
+                        element={<Dashboard />}
+                    />
+                </Route>
             </Routes>
             <FooterCom />
         </BrowserRouter>
