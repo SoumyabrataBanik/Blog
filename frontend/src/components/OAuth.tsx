@@ -39,7 +39,11 @@ const OAuth = () => {
                 dispatch(signInFailure("Google login unsuccessfull"));
             }
         } catch (error) {
-            console.log(error);
+            if (error instanceof Error) {
+                toast.error(error.message);
+            } else {
+                toast.error("Unexpected Error occured");
+            }
         }
     }
 

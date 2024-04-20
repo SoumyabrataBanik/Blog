@@ -4,10 +4,12 @@ import storage from "redux-persist/lib/storage";
 
 import userReducer from "./user/userSlice";
 import themeReducer from "./theme/themeSlice";
+import tabReducer from "./current-tab/currentTabSlice";
 
 const rootReducer = combineReducers({
     user: userReducer,
     theme: themeReducer,
+    tab: tabReducer,
 });
 
 const persistConfig = {
