@@ -78,7 +78,7 @@ export default function SignUp() {
                             </span>{" "}
                             Blog
                         </Link>
-                        <p className="text-sm mt-8 text-pretty tracking-wide text-slate-600">
+                        <p className="text-sm mt-8 text-pretty tracking-wide text-gray-600 dark:text-gray-200">
                             This a personal project. You can sign up using your
                             email or google.
                             <br />

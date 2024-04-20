@@ -88,7 +88,7 @@ export default function SignIn() {
                             </span>{" "}
                             Blog
                         </Link>
-                        <p className="text-sm mt-8 text-pretty tracking-wide text-slate-600">
+                        <p className="text-sm mt-8 text-pretty tracking-wide text-gray-600 dark:text-gray-300">
                             This a personal project. You can sign in using your
                             email or google.
                             <br />
