@@ -8,7 +8,6 @@ import { Button, TextInput } from "flowbite-react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 
-import "react-circular-progressbar/dist/styles.css";
 import toast from "react-hot-toast";
 import { app } from "../firebase";
 import { RootState } from "../redux-store/store";

@@ -129,7 +129,7 @@ export async function googleAuth(
             );
             return res
                 .status(200)
-                .cookie("access-token", token, {
+                .cookie("accessToken", token, {
                     httpOnly: true,
                 })
                 .json({
@@ -167,7 +167,7 @@ export async function googleAuth(
             const user = await UserModel.findById(newUser._id).select(
                 "-password"
             );
-            return res.status(200).cookie("access-token", token).json({
+            return res.status(200).cookie("accessToken", token).json({
                 success: true,
                 message: "Google Login Successfull",
                 user,
