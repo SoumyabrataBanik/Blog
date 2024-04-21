@@ -24,7 +24,7 @@ export default function Dashboard() {
                 {/* Sidebar */}
                 <DashSidebar />
             </div>
-            <div>
+            <div className="w-full">
                 {/* Profile */}
                 {tab === "profile" && <DashProfile />}
             </div>
