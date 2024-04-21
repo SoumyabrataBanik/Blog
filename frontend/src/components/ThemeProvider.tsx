@@ -11,7 +11,7 @@ const ThemeProvider = ({ children }: ThemeProviderProps) => {
 
     return (
         <div className={theme}>
-            <div className="bg-white text-gray-800 dark:bg-gray-700 dark:text-gray-50 min-h-screen">
+            <div className="bg-white text-gray-800 dark:bg-gray-700 dark:text-gray-50 min-h-screen transition-all ease-in-out">
                 {children}
             </div>
         </div>
