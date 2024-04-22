@@ -38,27 +38,37 @@ export const updateUser = async (
     try {
         const { userName, email, password, avatar } = req.body as RequestBody;
 
-        if (userName) {
-            if (userName.includes(" ")) {
+        if (!userName && !email && !password && !avatar) {
+            return res.status(400).json({
+                success: false,
+                message: "Nothing to update",
+            });
+        }
+
+        const lowercaseUsername = userName?.toLowerCase();
+
+        if (lowercaseUsername) {
+            if (lowercaseUsername.includes(" ")) {
                 return res.status(401).json({
                     success: false,
                     message: "Username cannot contain spaces",
                 });
             }
-            if (userName.length < 7) {
+            if (lowercaseUsername.length < 7) {
                 return res.status(401).json({
                     success: false,
                     message: "Username cannot be less than 7 characters",
                 });
             }
-            if (userName.length > 20) {
+            if (lowercaseUsername.length > 20) {
                 return res.status(401).json({
                     success: false,
                     message: "Username cannot be more than 20 characters",
                 });
             }
-
-            const userNameExists = await UserModel.findOne({ userName });
+            const userNameExists = await UserModel.findOne({
+                userName: lowercaseUsername,
+            });
             if (userNameExists) {
                 return res.status(401).json({
                     success: false,
@@ -106,7 +116,7 @@ export const updateUser = async (
 
         await UserModel.findByIdAndUpdate(user?.id, {
             $set: {
-                userName,
+                userName: lowercaseUsername,
                 email,
                 password,
                 avatar,
@@ -119,5 +129,31 @@ export const updateUser = async (
         });
     } catch (error) {
         next(errorHandler(false, 500, "Server error"));
+    }
+};
+
+export const deleteUser = async function (
+    req: e.Request,
+    res: e.Response,
+    next: e.NextFunction
+) {
+    const user = (req.user as RequestUser) || null;
+
+    if (!user) {
+        return res.status(400).json({
+            success: false,
+            message: "Unauthorized",
+        });
+    }
+
+    try {
+        const userId = user.id;
+        await UserModel.findByIdAndDelete(userId);
+        return res.status(200).json({
+            success: true,
+            message: "User deleted successfully",
+        });
+    } catch (error) {
+        next(error);
     }
 };
