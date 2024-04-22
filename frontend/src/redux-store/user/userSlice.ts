@@ -43,10 +43,20 @@ export const userSlice = createSlice({
                 state.currentUser.avatar = action.payload;
             }
         },
+        deleteUser: (state) => {
+            if (state.currentUser) {
+                state.currentUser = initialState.currentUser;
+            }
+        },
     },
 });
 
-export const { signInStart, signInSuccess, signInFailure, updateAvatar } =
-    userSlice.actions;
+export const {
+    signInStart,
+    signInSuccess,
+    signInFailure,
+    updateAvatar,
+    deleteUser,
+} = userSlice.actions;
 
 export default userSlice.reducer;

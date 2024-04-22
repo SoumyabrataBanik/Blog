@@ -4,7 +4,7 @@ import {
     ref,
     uploadBytesResumable,
 } from "firebase/storage";
-import { Button, TextInput } from "flowbite-react";
+import { Button, Modal, TextInput } from "flowbite-react";
 import React, {
     ChangeEvent,
     FormEvent,
@@ -16,8 +16,10 @@ import React, {
 import { useDispatch, useSelector } from "react-redux";
 
 import toast from "react-hot-toast";
+import { HiOutlineExclamationCircle } from "react-icons/hi";
+import { useNavigate } from "react-router-dom";
 import { app } from "../firebase";
-import { RootState } from "../redux-store/store";
+import { RootState, persistor } from "../redux-store/store";
 import { updateAvatar } from "../redux-store/user/userSlice";
 
 /**
@@ -41,9 +43,11 @@ type ResData = {
  */
 const DashProfile = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [imageFileUrl, setImageFileUrl] = useState<string | null>(null);
     const [errorUploadingImage, setErrorUploadingImage] = useState<string>("");
+    const [showModal, setShowModal] = useState<boolean>(false);
 
     const filePickerRef = useRef<HTMLInputElement>(null);
 
@@ -129,6 +133,33 @@ const DashProfile = () => {
         }
     };
 
+    const deleteAccountHandler = async function () {
+        try {
+            const res = await fetch(`/api/user/delete/${currentUser?.id}`, {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+            });
+            const data = (await res.json()) as ResData;
+            const { success, message } = data;
+            if (success) {
+                toast.success(
+                    "Your account has been successfully deleted! Sorry to see you go!"
+                );
+                persistor.pause();
+                persistor.flush().then(() => {
+                    return persistor.purge();
+                });
+                setShowModal(false);
+                navigate("/");
+            } else {
+                toast.error(message);
+                setShowModal(false);
+            }
+        } catch (error) {
+            toast.error("Error occurred while deleting");
+        }
+    };
+
     return (
         <div className="max-w-lg mx-auto p-3 w-full">
             <h1 className="text-center my-7 font-semibold text-3xl md:text-4xl">
@@ -185,7 +216,10 @@ const DashProfile = () => {
                     </Button>
                 </form>
                 <div className="text-red-600 flex justify-between mt-4 w-full">
-                    <span className="cursor-pointer hover:underline">
+                    <span
+                        className="cursor-pointer hover:underline"
+                        onClick={() => setShowModal(true)}
+                    >
                         Delete Account
                     </span>
                     <span className="cursor-pointer hover:underline">
@@ -193,6 +227,38 @@ const DashProfile = () => {
                     </span>
                 </div>
             </div>
+            {showModal && (
+                <Modal
+                    show={showModal}
+                    onClose={() => setShowModal(false)}
+                    popup
+                    size="md"
+                >
+                    <Modal.Header />
+                    <Modal.Body>
+                        <div className="text-center">
+                            <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
+                        </div>
+                        <h3 className="mb-8 text-center">
+                            Do you really want to delete your account?
+                        </h3>
+                        <div className="flex justify-center gap-4">
+                            <Button
+                                color="failure"
+                                onClick={deleteAccountHandler}
+                            >
+                                Delete
+                            </Button>
+                            <Button
+                                color="gray"
+                                onClick={() => setShowModal(false)}
+                            >
+                                Cancel
+                            </Button>
+                        </div>
+                    </Modal.Body>
+                </Modal>
+            )}
         </div>
     );
 };
