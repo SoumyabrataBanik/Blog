@@ -2,11 +2,19 @@ import e from "express";
 import { UserModel } from "../models/user.models";
 import { validateSignUpDetails } from "../helpers/validators";
 import { truncate } from "fs";
+import { errorHandler } from "../utils/ApiError";
 
 export interface RequestUser {
     id: string;
     iat: number;
 }
+
+type RequestBody = {
+    userName?: string;
+    email?: string;
+    password?: string;
+    avatar?: string;
+};
 
 export function testFunction(req: e.Request, res: e.Response) {
     return res.json({
@@ -28,30 +36,88 @@ export const updateUser = async (
     }
 
     try {
-        const { userName, email, password } = req.body;
-        if (validateSignUpDetails(userName)) {
-            const newUsername = await UserModel.findByIdAndUpdate(user?.id, {
+        const { userName, email, password, avatar } = req.body as RequestBody;
+
+        if (userName) {
+            if (userName.includes(" ")) {
+                return res.status(401).json({
+                    success: false,
+                    message: "Username cannot contain spaces",
+                });
+            }
+            if (userName.length < 7) {
+                return res.status(401).json({
+                    success: false,
+                    message: "Username cannot be less than 7 characters",
+                });
+            }
+            if (userName.length > 20) {
+                return res.status(401).json({
+                    success: false,
+                    message: "Username cannot be more than 20 characters",
+                });
+            }
+
+            const userNameExists = await UserModel.findOne({ userName });
+            if (userNameExists) {
+                return res.status(401).json({
+                    success: false,
+                    message: "Username already exists",
+                });
+            }
+        }
+
+        if (email) {
+            if (!email.includes("@") || !email.includes(".")) {
+                return res.status(401).json({
+                    success: false,
+                    message: "Provide a proper email",
+                });
+            }
+            if (email.includes(" ")) {
+                return res.status(401).json({
+                    success: false,
+                    message: "Email cannot contain spaces",
+                });
+            }
+            const emailExists = await UserModel.findOne({ email });
+            if (emailExists) {
+                return res.status(401).json({
+                    success: false,
+                    message: "Email already exists",
+                });
+            }
+        }
+
+        if (password) {
+            if (password.length > 20) {
+                return res.status(401).json({
+                    success: false,
+                    message: "Password cannot be greater than 20 characters",
+                });
+            }
+            if (password.length < 7) {
+                return res.status(401).json({
+                    success: false,
+                    message: "Password cannot be less than 7 characters",
+                });
+            }
+        }
+
+        await UserModel.findByIdAndUpdate(user?.id, {
+            $set: {
                 userName,
-            });
-            await newUsername?.save();
-        }
-        if (validateSignUpDetails(email)) {
-            const newEmail = await UserModel.findByIdAndUpdate(user?.id, {
                 email,
-            });
-            await newEmail?.save();
-        }
-        if (validateSignUpDetails(password)) {
-            const newPassword = await UserModel.findByIdAndUpdate(user?.id, {
                 password,
-            });
-            await newPassword?.save();
-        }
+                avatar,
+            },
+        });
+
         return res.status(200).json({
             success: true,
-            message: "User details updated successfully",
+            message: "User Updated successfully",
         });
     } catch (error) {
-        next(error);
+        next(errorHandler(false, 500, "Server error"));
     }
 };

@@ -108,5 +108,5 @@
   },
   "exclude": ["node_modules"],
   "include": ["src/"],
-  "files": ["src/@types/express/index.d.ts"]
+  "files": ["src/@types/express/index.d.ts", "src/@types/env/environment.d.ts"]
 }
